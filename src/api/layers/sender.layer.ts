@@ -142,16 +142,21 @@ export class SenderLayer extends ListenerLayer {
       if (typeof validating === 'object') {
         return reject(validating);
       }
-      const result = await this.page.evaluate(
-        ({ to, content }) => {
-          return WAPI.sendMessage(to, content);
-        },
-        { to, content }
-      );
-      if (result['erro'] == true) {
-        return reject(result);
-      } else {
-        return resolve(result);
+
+      try {
+        const result = await this.page.evaluate(
+          ({ to, content }) => {
+            return WAPI.sendMessage(to, content);
+          },
+          { to, content }
+        );
+        if (result['erro'] == true) {
+          return reject(result);
+        } else {
+          return resolve(result);
+        }
+      } catch(err){
+        reject(err);
       }
     });
   }
